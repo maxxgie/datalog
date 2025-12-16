@@ -308,10 +308,10 @@ if all_chemicals:
         props_found = False
         
         if irac_result:
-            st.info(f"🎯 **IRAC Group:** {irac_result[0][1]}")
+            st.info(f"🎯 **IRAC Group:** {irac_result[0][0]}")
             props_found = True
         if frac_result:
-            st.info(f"🎯 **FRAC Group:** {frac_result[0][1]}")
+            st.info(f"🎯 **FRAC Group:** {frac_result[0][0]}")
             props_found = True
         if systemic_result:
             st.success("✅ **Systemic:** Yes")
