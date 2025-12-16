@@ -1,0 +1,80 @@
+
+% ---------- PESTS ----------
+pest("armoredscale").
+pest("thrips").
+pest("perseamite").
+pest("avocadolacebug").
+pest("fruitfly").
+pest("rootrotphytophthora").
+
+% ---------- PESTICIDES ----------
+pesticide("abamectin").
+pesticide("spinosad").
+pesticide("azadirachtin").
+pesticide("mineraloil").
+pesticide("copperfungicide").
+pesticide("bacillusthuringiensis").
+pesticide("deltamethrin").
+
+% ---------- CONTROLS ----------
+controls("abamectin","perseamite").
+controls("mineraloil","armoredscale").
+controls("azadirachtin","armoredscale").
+controls("spinosad","thrips").
+controls("spinosad","fruitfly").
+controls("bacillusthuringiensis","fruitfly").
+controls("copperfungicide","rootrotphytophthora").
+controls("deltamethrin","avocadolacebug").
+
+% ---------- PESTICIDE TYPES ----------
+type("abamectin","miticide").
+type("spinosad","organic").
+type("azadirachtin","organic").
+type("mineraloil","horticulturaloil").
+type("copperfungicide","fungicide").
+type("bacillusthuringiensis","bioinsecticide").
+type("deltamethrin","pyrethroid").
+
+% ---------- PEST CATEGORIES ----------
+category("perseamite","mite").
+category("armoredscale","scaleinsect").
+category("thrips","insect").
+category("avocadolacebug","insect").
+category("fruitfly","insect").
+category("rootrotphytophthora","fungus").
+
+% ---------- RULES ----------
+% pesticide is effective if it controls pest
+effective(P,S) :- controls(P,S).
+
+% organic pesticide option
+organicoption(S,P) :- controls(P,S), type(P,"organic").
+
+% fungal disease treatment
+fungaltreatment(S,P) :- category(S,"fungus"), type(P,"fungicide").
+
+% ---------- SPECIFIC QUERY PREDICATES ----------
+% Pesticide for every pest
+query_effective_perseamite(P) :- effective(P,"perseamite").
+query_effective_armoredscale(P) :- effective(P,"armoredscale").
+query_effective_thrips(P) :- effective(P,"thrips").
+query_effective_avocadolacebug(P) :- effective(P,"avocadolacebug").
+query_effective_fruitfly(P) :- effective(P,"fruitfly").
+query_effective_rootrot(P) :- effective(P,"rootrotphytophthora").
+
+% Organic pesticide for each pest
+query_organic_perseamite(P) :- organicoption("perseamite",P).
+query_organic_armoredscale(P) :- organicoption("armoredscale",P).
+query_organic_thrips(P) :- organicoption("thrips",P).
+query_organic_avocadolacebug(P) :- organicoption("avocadolacebug",P).
+query_organic_fruitfly(P) :- organicoption("fruitfly",P).
+query_organic_rootrot(P) :- organicoption("rootrotphytophthora",P).
+
+% Fungal treatment for each pest
+query_fungal_perseamite(P) :- fungaltreatment("perseamite",P).
+query_fungal_armoredscale(P) :- fungaltreatment("armoredscale",P).
+query_fungal_thrips(P) :- fungaltreatment("thrips",P).
+query_fungal_avocadolacebug(P) :- fungaltreatment("avocadolacebug",P).
+query_fungal_fruitfly(P) :- fungaltreatment("fruitfly",P).
+query_fungal_rootrot(P) :- fungaltreatment("rootrotphytophthora",P).
+
