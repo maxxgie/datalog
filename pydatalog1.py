@@ -1,3 +1,174 @@
+import streamlit as st
+from pyDatalog import pyDatalog
+
+# Initialize pyDatalog only once using session state
+if 'kb_initialized' not in st.session_state:
+    pyDatalog.clear()
+    
+    # Declare variables
+    pyDatalog.create_terms('Pest, Chemical, Disease, Tool, Control, Group, RuleName')
+    
+    # Declare predicates
+    pyDatalog.create_terms('pest, disease, insecticide, miticide, fungicide, natural_solution')
+    pyDatalog.create_terms('biopesticide, biocontrol, controls_pest, controls_disease, has_irac_group')
+    pyDatalog.create_terms('has_frac_group, is_systemic, is_translaminar, is_contact, is_stomach_poison')
+    pyDatalog.create_terms('is_protectant, is_fungistat, is_post_harvest, is_selective, is_non_selective')
+    pyDatalog.create_terms('application_method, is_organic, is_ipm_tool, find_pest_control')
+    pyDatalog.create_terms('find_disease_control, is_ipm_choice, is_biological_or_natural')
+    pyDatalog.create_terms('is_organic_control, is_high_resistance_risk, get_irac_group, get_frac_group')
+    pyDatalog.create_terms('resistance_management_strategy, preferred_application, high_risk_application')
+    pyDatalog.create_terms('is_fungicide_protectant, is_physical_control, ipm_cultural_rule')
+    pyDatalog.create_terms('resistance_rule, application_rule, fungicide_rule, ipm_rule')
+    
+    # --- FACTS: PESTS ---
+    pyDatalog.assert_fact('pest', 'avocado_thrips')
+    pyDatalog.assert_fact('pest', 'boring_beetles')
+    pyDatalog.assert_fact('pest', 'ambrosia_beetles')
+    pyDatalog.assert_fact('pest', 'polyphagous_shothole_borer')
+    pyDatalog.assert_fact('pest', 'avocado_lace_bug')
+    pyDatalog.assert_fact('pest', 'mites')
+    pyDatalog.assert_fact('pest', 'persea_mite')
+    pyDatalog.assert_fact('pest', 'avocado_brown_mite')
+    pyDatalog.assert_fact('pest', 'sixspotted_mite')
+    pyDatalog.assert_fact('pest', 'caterpillars')
+    pyDatalog.assert_fact('pest', 'western_avocado_leafroller')
+    pyDatalog.assert_fact('pest', 'omnivorous_looper')
+    pyDatalog.assert_fact('pest', 'scale_insects')
+    pyDatalog.assert_fact('pest', 'greenhouse_thrips')
+    
+    # --- FACTS: DISEASES ---
+    pyDatalog.assert_fact('disease', 'phytophthora_root_rot')
+    pyDatalog.assert_fact('disease', 'laurel_wilt')
+    pyDatalog.assert_fact('disease', 'anthracnose')
+    pyDatalog.assert_fact('disease', 'cercospora_spot')
+    
+    # --- FACTS: INSECTICIDES & MITICIDES ---
+    insecticides = ['abamectin', 'spinetoram', 'spinosad', 'spirotetramat', 'imidacloprid',
+                    'dinotefuran', 'sabadilla', 'emamectin_benzoate', 'pyrethroids',
+                    'permethrin', 'bifenthrin', 'malathion', 'fenpropathrin', 'pyrethrin']
+    for insect in insecticides:
+        pyDatalog.assert_fact('insecticide', insect)
+    
+    pyDatalog.assert_fact('miticide', 'spirodiclofen')
+    
+    # --- FACTS: FUNGICIDES ---
+    fungicides = ['phosphonates', 'fosetyl_al', 'potassium_phosphite', 'metalaxyl',
+                  'propiconazole', 'copper', 'azoxystrobin', 'strobilurin', 'prochloraz']
+    for fung in fungicides:
+        pyDatalog.assert_fact('fungicide', fung)
+    
+    # --- FACTS: BIOLOGICALS ---
+    natural_sols = ['horticultural_oil', 'insecticidal_soap', 'neem_oil', 'wettable_sulfur']
+    for sol in natural_sols:
+        pyDatalog.assert_fact('natural_solution', sol)
+    
+    biopests = ['bt', 'beauveria_bassiana']
+    for bio in biopests:
+        pyDatalog.assert_fact('biopesticide', bio)
+    
+    biocontrols = ['predatory_mites', 'parasitic_wasps', 'generalist_predators']
+    for bc in biocontrols:
+        pyDatalog.assert_fact('biocontrol', bc)
+    
+    # --- ASSOCIATIONS: PEST CONTROLS ---
+    pest_controls = [
+        ('abamectin', 'avocado_thrips'), ('spinetoram', 'avocado_thrips'),
+        ('spinosad', 'avocado_thrips'), ('spirotetramat', 'avocado_thrips'),
+        ('imidacloprid', 'avocado_thrips'), ('dinotefuran', 'avocado_thrips'),
+        ('sabadilla', 'avocado_thrips'), ('emamectin_benzoate', 'boring_beetles'),
+        ('pyrethroids', 'boring_beetles'), ('malathion', 'boring_beetles'),
+        ('fenpropathrin', 'boring_beetles'), ('sanitation', 'polyphagous_shothole_borer'),
+        ('imidacloprid', 'avocado_lace_bug'), ('pyrethrin', 'avocado_lace_bug'),
+        ('neem_oil', 'avocado_lace_bug'), ('abamectin', 'persea_mite'),
+        ('spirodiclofen', 'persea_mite'), ('horticultural_oil', 'mites'),
+        ('wettable_sulfur', 'mites'), ('predatory_mites', 'mites'),
+        ('bt', 'caterpillars'), ('spinosyns', 'caterpillars'),
+        ('pyrethroids', 'caterpillars'), ('natural_enemies', 'scale_insects'),
+        ('horticultural_oil', 'scale_insects'), ('insecticidal_soap', 'scale_insects'),
+        ('parasitic_wasps', 'scale_insects'), ('beauveria_bassiana', 'ambrosia_beetles'),
+        ('beauveria_bassiana', 'avocado_thrips'), ('trichogramma', 'caterpillars')
+    ]
+    for chem, pest_name in pest_controls:
+        pyDatalog.assert_fact('controls_pest', chem, pest_name)
+    
+    # --- ASSOCIATIONS: DISEASE CONTROLS ---
+    disease_controls = [
+        ('phosphonates', 'phytophthora_root_rot'), ('metalaxyl', 'phytophthora_root_rot'),
+        ('cultural_control_mulch', 'phytophthora_root_rot'),
+        ('cultural_control_drainage', 'phytophthora_root_rot'),
+        ('cultural_control_gypsum', 'phytophthora_root_rot'),
+        ('propiconazole', 'laurel_wilt'), ('sanitation', 'laurel_wilt'),
+        ('copper', 'anthracnose'), ('azoxystrobin', 'anthracnose'),
+        ('prochloraz', 'anthracnose'), ('cultural_control_pruning', 'anthracnose'),
+        ('copper', 'cercospora_spot')
+    ]
+    for chem, dis in disease_controls:
+        pyDatalog.assert_fact('controls_disease', chem, dis)
+    
+    # --- PROPERTIES ---
+    irac_groups = [
+        ('abamectin', '6'), ('emamectin_benzoate', '6'), ('spinosad', '5'),
+        ('spinetoram', '5'), ('spirotetramat', '23'), ('spirodiclofen', '23'),
+        ('imidacloprid', '4A'), ('dinotefuran', '4A'), ('pyrethroids', '3A'),
+        ('permethrin', '3A'), ('bifenthrin', '3A'), ('fenpropathrin', '3A'),
+        ('pyrethrin', '3A'), ('malathion', '1B'), ('bt', '11A'), ('sabadilla', 'UN')
+    ]
+    for chem, group in irac_groups:
+        pyDatalog.assert_fact('has_irac_group', chem, group)
+    
+    frac_groups = [
+        ('phosphonates', 'P07'), ('metalaxyl', '4'), ('propiconazole', '3'),
+        ('prochloraz', '3'), ('copper', 'M01'), ('azoxystrobin', '11'),
+        ('strobilurin', '11')
+    ]
+    for chem, group in frac_groups:
+        pyDatalog.assert_fact('has_frac_group', chem, group)
+    
+    # Chemical properties
+    systemic_chems = ['spirotetramat', 'imidacloprid', 'dinotefuran', 
+                      'emamectin_benzoate', 'phosphonates', 'propiconazole']
+    for chem in systemic_chems:
+        pyDatalog.assert_fact('is_systemic', chem)
+    
+    pyDatalog.assert_fact('is_translaminar', 'abamectin')
+    
+    contact_chems = ['pyrethroids', 'malathion', 'fenpropathrin', 'spirodiclofen',
+                     'horticultural_oil', 'insecticidal_soap']
+    for chem in contact_chems:
+        pyDatalog.assert_fact('is_contact', chem)
+    
+    pyDatalog.assert_fact('is_stomach_poison', 'sabadilla')
+    pyDatalog.assert_fact('is_protectant', 'copper')
+    pyDatalog.assert_fact('is_protectant', 'azoxystrobin')
+    pyDatalog.assert_fact('is_fungistat', 'phosphonates')
+    pyDatalog.assert_fact('is_post_harvest', 'prochloraz')
+    pyDatalog.assert_fact('is_selective', 'bt')
+    pyDatalog.assert_fact('is_non_selective', 'horticultural_oil')
+    
+    # --- ORGANIC & IPM FACTS ---
+    organic_items = ['spinosad', 'sabadilla', 'pyrethrin', 'horticultural_oil',
+                     'wettable_sulfur', 'bt', 'neem_oil', 'insecticidal_soap']
+    for item in organic_items:
+        pyDatalog.assert_fact('is_organic', item)
+    
+    ipm_tools = ['bt', 'horticultural_oil', 'insecticidal_soap', 'neem_oil',
+                 'predatory_mites', 'parasitic_wasps', 'beauveria_bassiana']
+    for tool in ipm_tools:
+        pyDatalog.assert_fact('is_ipm_tool', tool)
+    
+    # --- RULES ---
+    find_pest_control(Pest, Chemical) <= pest(Pest) & controls_pest(Chemical, Pest)
+    find_disease_control(Disease, Chemical) <= disease(Disease) & controls_disease(Chemical, Disease)
+    is_ipm_choice(Tool) <= is_ipm_tool(Tool)
+    is_biological_or_natural(Control) <= natural_solution(Control)
+    is_biological_or_natural(Control) <= biopesticide(Control)
+    is_biological_or_natural(Control) <= biocontrol(Control)
+    is_organic_control(Control) <= is_organic(Control)
+    get_irac_group(Chemical, Group) <= has_irac_group(Chemical, Group)
+    get_frac_group(Chemical, Group) <= has_frac_group(Chemical, Group)
+    
+    st.session_state.kb_initialized = True
+
 # --- STREAMLIT UI ---
 st.set_page_config(page_title="Avocado Pest KB", page_icon="🥑", layout="wide")
 st.title("🥑 Avocado Pest & Disease Knowledge Base")
