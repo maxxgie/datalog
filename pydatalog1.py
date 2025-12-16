@@ -234,7 +234,7 @@ if all_diseases:
 st.header("3. Query by Control Type")
 col1, col2, col3 = st.columns(3)
 
-if col1.button("🌱 Organic Controls"):
+if col1.button("🌱 Organic-Controls"):
     try:
         organic_query = is_organic_control(Control)
         results = organic_query.data if organic_query.data else []
@@ -308,10 +308,10 @@ if all_chemicals:
         props_found = False
         
         if irac_result:
-            st.info(f"🎯 **IRAC Group:** {irac_result[0][0]}")
+            st.info(f"🎯 **IRAC Group:** {irac_result[0][1]}")
             props_found = True
         if frac_result:
-            st.info(f"🎯 **FRAC Group:** {frac_result[0][0]}")
+            st.info(f"🎯 **FRAC Group:** {frac_result[0][1]}")
             props_found = True
         if systemic_result:
             st.success("✅ **Systemic:** Yes")
