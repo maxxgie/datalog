@@ -234,7 +234,7 @@ if all_diseases:
 st.header("3. Query by Control Type")
 col1, col2, col3 = st.columns(3)
 
-if col1.button("🌱 Organic-Controls"):
+if col1.button("🌱 ORGANIC-Controls"):
     try:
         organic_query = is_organic_control(Control)
         results = organic_query.data if organic_query.data else []
