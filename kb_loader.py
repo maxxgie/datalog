@@ -7,7 +7,6 @@ from kb_rules import load_rules
 def load_kb():
     pyDatalog.clear()
 
-    # DECLARE TERMS FIRST
     pyDatalog.create_terms("""
         Pest, Chemical, Disease, Tool, Control, Group,
         pest, disease, insecticide, miticide, fungicide,
