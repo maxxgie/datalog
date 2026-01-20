@@ -1,2 +1,4 @@
 streamlit
 pyDatalog
+pandas
+numpy   
