@@ -1,24 +1,21 @@
 from pyDatalog import pyDatalog
 
-def load_rules():
-    Pest, Chemical, Disease, Tool, Control, Group = pyDatalog.terms(
-        'Pest, Chemical, Disease, Tool, Control, Group'
-    )
+# Create all terms needed for rules
+pyDatalog.create_terms("""
+    Pest, Chemical, Disease, Tool, Control, Group,
+    find_pest_control, find_disease_control, is_ipm_choice, is_biological_or_natural,
+    is_ipm_tool, natural_solution
+""")
 
+def load_rules():
     # RULE 1: Pest → Control
-    pyDatalog.terms.find_pest_control(Pest, Chemical) <= \
-        pyDatalog.terms.pest(Pest) & \
-        pyDatalog.terms.controls_pest(Chemical, Pest)
+    find_pest_control(Pest, Chemical) <= pest(Pest) & controls_pest(Chemical, Pest)
 
     # RULE 2: Disease → Control
-    pyDatalog.terms.find_disease_control(Disease, Chemical) <= \
-        pyDatalog.terms.disease(Disease) & \
-        pyDatalog.terms.controls_disease(Chemical, Disease)
+    find_disease_control(Disease, Chemical) <= disease(Disease) & controls_disease(Chemical, Disease)
 
     # RULE 3: IPM tools
-    pyDatalog.terms.is_ipm_choice(Tool) <= \
-        pyDatalog.terms.is_ipm_tool(Tool)
+    is_ipm_choice(Tool) <= is_ipm_tool(Tool)
 
     # RULE 4: Biological / Natural
-    pyDatalog.terms.is_biological_or_natural(Control) <= \
-        pyDatalog.terms.natural_solution(Control)
+    is_biological_or_natural(Control) <= natural_solution(Control)

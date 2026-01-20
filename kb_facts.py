@@ -1,36 +1,34 @@
 from pyDatalog import pyDatalog
 
+# Create all terms needed for facts
+pyDatalog.create_terms("""
+    pest, disease, insecticide, miticide, fungicide,
+    controls_pest, controls_disease,
+    has_irac_group, has_frac_group,
+    is_systemic, is_organic,
+    natural_solution, biopesticide, biocontrol
+""")
+
 def load_facts():
     assert_fact = pyDatalog.assert_fact
 
     # ---- PESTS ----
-    assert_fact('pest', 'avocado_thrips')
-    assert_fact('pest', 'boring_beetles')
-    assert_fact('pest', 'ambrosia_beetles')
-    assert_fact('pest', 'polyphagous_shothole_borer')
-    assert_fact('pest', 'avocado_lace_bug')
-    assert_fact('pest', 'mites')
-    assert_fact('pest', 'persea_mite')
-    assert_fact('pest', 'avocado_brown_mite')
-    assert_fact('pest', 'sixspotted_mite')
-    assert_fact('pest', 'caterpillars')
-    assert_fact('pest', 'scale_insects')
-    assert_fact('pest', 'greenhouse_thrips')
+    for p in ['avocado_thrips', 'boring_beetles', 'ambrosia_beetles', 
+              'polyphagous_shothole_borer', 'avocado_lace_bug', 'mites',
+              'persea_mite', 'avocado_brown_mite', 'sixspotted_mite',
+              'caterpillars', 'scale_insects', 'greenhouse_thrips']:
+        assert_fact('pest', p)
 
     # ---- DISEASES ----
-    assert_fact('disease', 'phytophthora_root_rot')
-    assert_fact('disease', 'laurel_wilt')
-    assert_fact('disease', 'anthracnose')
-    assert_fact('disease', 'cercospora_spot')
+    for d in ['phytophthora_root_rot', 'laurel_wilt', 'anthracnose', 'cercospora_spot']:
+        assert_fact('disease', d)
 
     # ---- CHEMICALS ----
-    assert_fact('insecticide', 'abamectin')
-    assert_fact('insecticide', 'spinosad')
-    assert_fact('insecticide', 'spinetoram')
-    assert_fact('insecticide', 'imidacloprid')
+    for i in ['abamectin', 'spinosad', 'spinetoram', 'imidacloprid']:
+        assert_fact('insecticide', i)
     assert_fact('miticide', 'spirodiclofen')
-    assert_fact('fungicide', 'copper')
-    assert_fact('fungicide', 'azoxystrobin')
+    for f in ['copper', 'azoxystrobin']:
+        assert_fact('fungicide', f)
 
     # ---- ASSOCIATIONS ----
     assert_fact('controls_pest', 'abamectin', 'avocado_thrips')
